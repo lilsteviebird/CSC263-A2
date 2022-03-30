@@ -19,20 +19,23 @@ int main(int argc, const char * argv[]) {
     int line_number = atoi(argv[2]);
     int k_sets = atoi(argv[3]);
     vector <string> keywords;
-    int size = sizeof(argv);
 
-    cout << size << endl;
-    for(int i = 4; i <= size;i++){
+    keywords.push_back("+Datasets");
+    keywords.push_back("accuracy");
+    // for(int i = 4; i <= size;i++){
 
-        string curr = argv[i];
-        cout << curr << endl;
-        keywords.push_back(curr);
-            cout << "got here" <<endl;
+    //     string curr = argv[i];
+    //     if(curr.compare("")){
+    //         break;
+    //     }
+    //     cout << curr << endl;
+    //     keywords.push_back(curr);
+    //         cout << "got here" <<endl;
 
-    }
-    cout << "got here" <<endl;
+    // }
+    // cout << "got here" <<endl;
 
-    cout << keywords.at(0) << endl;
+    // cout << keywords.at(0) << endl;
 
 
     Xapian::WritableDatabase inverted_db = create_xapian_database(data_name, line_number);

@@ -23,7 +23,6 @@ Xapian::WritableDatabase create_xapian_database(string datatext_name, int length
 		if(count >= length){
 			break;
 		}
-		DocID add_ID;
 		//name of the document
 		if(count % 2 == 0){
 			// doc.clear_terms();
@@ -37,13 +36,10 @@ Xapian::WritableDatabase create_xapian_database(string datatext_name, int length
 				string curr = *t;
 				if(check_stop_word(curr, stop_words) == false){
 					curr = remove_special_characters(curr);
-					// cout<< "word is: ";
-					// cout << curr <<endl;
-					if(curr.compare(" ")){
+					if(curr.empty()){
 						continue;
 					}
 					doc.add_term(curr);
-
 				}
                 // cout << curr << endl;
 			}
@@ -56,8 +52,16 @@ Xapian::WritableDatabase create_xapian_database(string datatext_name, int length
 				string curr = *t;
 				if(check_stop_word(curr, stop_words) == false){
 					curr = remove_special_characters(curr);
+					if(curr.empty() || curr[0] == ' ' || curr.size() == 0){
+					continue;
+				}
+				else
+				{
 					doc.add_value(value, string(curr));
+					doc.add_term(curr);
 					value++;
+				}
+						
 				}
                 // cout << curr << endl;
 			}
@@ -76,7 +80,6 @@ Xapian::WritableDatabase create_xapian_database(string datatext_name, int length
 
 
 void query_searcher (Xapian::WritableDatabase db, int k, vector<string> keywords){
-	cout << "got here" << endl;
 
 	long start = 0;
     long finish = 0;
@@ -117,10 +120,6 @@ void query_searcher (Xapian::WritableDatabase db, int k, vector<string> keywords
 		allWords.push(curr);
 	}
 
-	int count = all_queries.size();
-
-	cout << count << endl;
-
 	Xapian::Query final_query = all_queries.front();
 	all_queries.pop();
 	string temp_word = allWords.front();
@@ -146,8 +145,14 @@ void query_searcher (Xapian::WritableDatabase db, int k, vector<string> keywords
 		allWords.pop();
 	}
 
+// Xapian::Query query2(
+//     Xapian::Query::OP_OR,
+//     keywords.begin(),
+//     keywords.end()
+// );
 	Xapian:: Enquire enquire(db);
-	enquire.set_query(final_query);
+	 enquire.set_query(final_query);
+	// enquire.set_query(query2);
 
 	Xapian::MSet matches = enquire.get_mset(0, k); 
  
@@ -155,7 +160,8 @@ void query_searcher (Xapian::WritableDatabase db, int k, vector<string> keywords
     finish = timer.time*1000 + timer.millitm;
     time = finish - start;
 
-	cout << "here we go" << endl;
+	int asdf = k;
+
 
 	for(Xapian::MSetIterator match = matches.begin(); match != matches.end(); match++){
 		cout << "we got in here" << endl;
@@ -168,14 +174,14 @@ void query_searcher (Xapian::WritableDatabase db, int k, vector<string> keywords
 			for (vector<string>::iterator t=keywords.begin(); t!=keywords.end(); ++t){
 				string curr = *t;
 				highlight = false;
-				if(print.compare(curr) == true){
+				if(print.compare(curr) == false){
 					highlight = true;
 					string concat = "===" + print + "===";
 					cout << concat << endl;
 				}
 			}
-			if(highlight = false){
-    			cout << print << endl;
+			if(highlight == false){
+				cout << print << endl;
 			}
 		}
 
