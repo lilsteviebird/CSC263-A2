@@ -111,6 +111,9 @@ void query_searcher (Xapian::WritableDatabase db, int k, vector<string> keywords
 		vector<string> filler;
 		filler.push_back(curr);
 		if(curr[0] == '+'){
+			filler.pop_back();
+			curr.erase(0,1);
+			filler.push_back(curr);
 			Xapian::Query toAdd(
 				Xapian::Query:: OP_AND,
 				filler.begin(),
@@ -128,7 +131,8 @@ void query_searcher (Xapian::WritableDatabase db, int k, vector<string> keywords
 		}
 		allWords.push(curr);
 	}
-						cout<<"ADded the word though" <<endl;
+
+	cout<<"ADded the word though" <<endl;
 
 	Xapian::Query final_query = all_queries.front();
 	all_queries.pop();
