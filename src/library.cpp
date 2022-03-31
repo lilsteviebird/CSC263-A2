@@ -29,20 +29,24 @@ Xapian::WritableDatabase create_xapian_database(string datatext_name, int length
 			// doc.clear_values();
 			Xapian:: Document new_doc;
 			doc = new_doc;
-			vector <string> seperated = split(line, ' ');
+			// vector <string> seperated = split(line, ' ');
+			doc.add_value(0, line);
 
 			//add terms
-			for (vector<string>::iterator t=seperated.begin(); t!=seperated.end(); ++t) {
-				string curr = *t;
-				if(check_stop_word(curr, stop_words) == false){
-					curr = remove_special_characters(curr);
-					if(curr.empty()){
-						continue;
-					}
-					doc.add_term(curr);
-				}
-                // cout << curr << endl;
-			}
+			// int iterator = 0;
+			// for (vector<string>::iterator t=seperated.begin(); t!=seperated.end(); ++t) {
+			// 	string curr = *t;
+			// 	if(check_stop_word(curr, stop_words) == false){
+			// 		curr = remove_special_characters(curr);
+			// 		if(curr.empty()){
+			// 			continue;
+			// 		}
+			// 		doc.add_value(iterator, string(curr));
+			// 		iterator++;
+
+			// 	}
+            //     // cout << curr << endl;
+			// }
 		}
 		else{
 			vector <string> seperated = split(line, ' ');
@@ -57,7 +61,7 @@ Xapian::WritableDatabase create_xapian_database(string datatext_name, int length
 				}
 				else
 				{
-					doc.add_value(value, string(curr));
+					//doc.add_value(value, string(curr));
 					doc.add_term(curr);
 					value++;
 				}
@@ -167,9 +171,10 @@ void query_searcher (Xapian::WritableDatabase db, int k, vector<string> keywords
 		cout << "we got in here" << endl;
     	Xapian::Document doc = match.get_document();
 		bool highlight = false;
-
-		for(Xapian::ValueIterator value = doc.values_begin(); value != doc.values_end(); value++){
-			string print = *value;
+		cout<< "Description Name: ";
+		cout << doc.get_value(0) <<endl;
+		for(Xapian::TermIterator term = doc.termlist_begin(); term != doc.termlist_end(); term++){
+			string print = *term;
 			bool highlight = false;
 			for (vector<string>::iterator t=keywords.begin(); t!=keywords.end(); ++t){
 				string curr = *t;
@@ -184,6 +189,23 @@ void query_searcher (Xapian::WritableDatabase db, int k, vector<string> keywords
 				cout << print << endl;
 			}
 		}
+
+		// for(Xapian::ValueIterator value = doc.values_begin(); value != doc.values_end(); value++){
+		// 	string print = *value;
+		// 	bool highlight = false;
+		// 	for (vector<string>::iterator t=keywords.begin(); t!=keywords.end(); ++t){
+		// 		string curr = *t;
+		// 		highlight = false;
+		// 		if(print.compare(curr) == false){
+		// 			highlight = true;
+		// 			string concat = "===" + print + "===";
+		// 			cout << concat << endl;
+		// 		}
+		// 	}
+		// 	if(highlight == false){
+		// 		cout << print << endl;
+		// 	}
+		// }
 
 		
 	}	
