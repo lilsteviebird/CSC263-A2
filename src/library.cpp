@@ -49,7 +49,8 @@ Xapian::WritableDatabase create_xapian_database(string datatext_name, int length
 			// }
 		}
 		else{
-			vector <string> seperated = split(line, ' ');
+			// vector <string> seperated = split(line, ' ');
+			vector <string> seperated = line_seperator(line);
 			//add words to document
 			int value = 0;
 			for (vector<string>::iterator t=seperated.begin(); t!=seperated.end(); ++t) {
@@ -57,24 +58,28 @@ Xapian::WritableDatabase create_xapian_database(string datatext_name, int length
 				if(check_stop_word(curr, stop_words) == false){
 					curr = remove_special_characters(curr);
 					if(curr.empty() || curr[0] == ' ' || curr.size() == 0){
-					continue;
-				}
-				else
-				{
-					//doc.add_value(value, string(curr));
-					doc.add_term(curr);
-					value++;
-				}
+						continue;
+					}
+					else
+					{
+						//doc.add_value(value, string(curr));
+						doc.add_term(curr);
+						value++;
+					}
 						
 				}
                 // cout << curr << endl;
 			}
 			db.add_document(doc);
+
 			db.commit();
+
 		}
 		count++;
 	}
+
 	db.commit();
+
 	// cout << count;
 	data_file.close();
 	stop_file.close();
@@ -123,6 +128,7 @@ void query_searcher (Xapian::WritableDatabase db, int k, vector<string> keywords
 		}
 		allWords.push(curr);
 	}
+						cout<<"ADded the word though" <<endl;
 
 	Xapian::Query final_query = all_queries.front();
 	all_queries.pop();
@@ -166,7 +172,7 @@ void query_searcher (Xapian::WritableDatabase db, int k, vector<string> keywords
 
 	int asdf = k;
 
-
+	cout << "where it go" << endl;
 	for(Xapian::MSetIterator match = matches.begin(); match != matches.end(); match++){
 		cout << "we got in here" << endl;
     	Xapian::Document doc = match.get_document();
@@ -214,23 +220,6 @@ void query_searcher (Xapian::WritableDatabase db, int k, vector<string> keywords
 }
 
 
-
-
-
-//helper methods below
-
-vector<string> split(string str, char delimiter) { 
-	vector<string> internal; 
-	stringstream ss(str); // Turn the string into a stream. 
-	string tok; 
-
-	while(getline(ss, tok, delimiter)) { 
-		internal.push_back(tok); 
-	} 
-
-	return internal; 
-} 
-
 string remove_special_characters(string line){
      string temp  = "";
 	//  cout << "\nLine is: ";
@@ -257,6 +246,21 @@ bool check_stop_word(string word_given, vector<string> stop_words){
 		}
 	}
 	return false;
+}
+
+vector<string> line_seperator(string line){
+	vector<string> return_list;
+	string temp = "";
+	for(std::string::size_type i = 0; i < line.size(); i++){
+		if(line[i] == ' '){
+			return_list.push_back(temp);
+			temp = "";
+		}else{
+			temp = temp + line[i];
+		}
+	}
+
+	return return_list;
 }
 
 
