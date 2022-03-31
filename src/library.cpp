@@ -219,6 +219,138 @@ void query_searcher (Xapian::WritableDatabase db, int k, vector<string> keywords
 	fprintf(stdout, "\nTIME: %ld milliseconds\n", time);
 }
 
+int query_searcher1 (Xapian::WritableDatabase db, int k, vector<string> keywords){
+
+	long start = 0;
+    long finish = 0;
+    long time = 0;
+
+    struct timeb timer;
+    ftime(&timer);
+    start = timer.time*1000 + timer.millitm;
+
+	queue <Xapian::Query> all_queries;
+	queue <string> allWords;
+	// for (vector<string>::iterator t=keywords.begin(); t!=keywords.end(); ++t){
+	// 	string curr = *t;
+	// 	cout<< curr << endl;
+	// }
+
+
+	for (vector<string>::iterator t=keywords.begin(); t!=keywords.end(); ++t) {
+		string curr = *t;
+		vector<string> filler;
+		filler.push_back(curr);
+		if(curr[0] == '+'){
+			Xapian::Query toAdd(
+				Xapian::Query:: OP_AND,
+				filler.begin(),
+				filler.end()
+			);
+			all_queries.push(toAdd);
+		}
+		else{
+			Xapian::Query toAdd(
+				Xapian::Query:: OP_OR,
+				filler.begin(),
+				filler.end()
+			);
+			all_queries.push(toAdd);
+		}
+		allWords.push(curr);
+	}
+						cout<<"ADded the word though" <<endl;
+
+	Xapian::Query final_query = all_queries.front();
+	all_queries.pop();
+	string temp_word = allWords.front();
+	allWords.pop();
+	while(!all_queries.empty()){
+		string new_temp = allWords.front();
+
+		if(new_temp[0] == '+'){
+			final_query = Xapian::Query(
+				Xapian::Query:: OP_AND,
+				final_query,
+				all_queries.front()
+			);
+		}
+		else{
+			final_query = Xapian::Query(
+				Xapian::Query:: OP_OR,
+				final_query,
+				all_queries.front()
+			);
+		}
+		all_queries.pop();
+		allWords.pop();
+	}
+
+// Xapian::Query query2(
+//     Xapian::Query::OP_OR,
+//     keywords.begin(),
+//     keywords.end()
+// );
+	Xapian:: Enquire enquire(db);
+	 enquire.set_query(final_query);
+	// enquire.set_query(query2);
+
+	Xapian::MSet matches = enquire.get_mset(0, k); 
+ 
+ 	ftime(&timer);
+    finish = timer.time*1000 + timer.millitm;
+    time = finish - start;
+
+	int asdf = k;
+
+	cout << "where it go" << endl;
+	for(Xapian::MSetIterator match = matches.begin(); match != matches.end(); match++){
+		cout << "we got in here" << endl;
+    	Xapian::Document doc = match.get_document();
+		bool highlight = false;
+		cout<< "Description Name: ";
+		cout << doc.get_value(0) <<endl;
+		for(Xapian::TermIterator term = doc.termlist_begin(); term != doc.termlist_end(); term++){
+			string print = *term;
+			bool highlight = false;
+			for (vector<string>::iterator t=keywords.begin(); t!=keywords.end(); ++t){
+				string curr = *t;
+				highlight = false;
+				if(print.compare(curr) == false){
+					highlight = true;
+					string concat = "===" + print + "===";
+					//cout << concat << endl;
+				}
+			}
+			if(highlight == false){
+				//cout << print << endl;
+			}
+		}
+
+		// for(Xapian::ValueIterator value = doc.values_begin(); value != doc.values_end(); value++){
+		// 	string print = *value;
+		// 	bool highlight = false;
+		// 	for (vector<string>::iterator t=keywords.begin(); t!=keywords.end(); ++t){
+		// 		string curr = *t;
+		// 		highlight = false;
+		// 		if(print.compare(curr) == false){
+		// 			highlight = true;
+		// 			string concat = "===" + print + "===";
+		// 			cout << concat << endl;
+		// 		}
+		// 	}
+		// 	if(highlight == false){
+		// 		cout << print << endl;
+		// 	}
+		// }
+
+		
+	}	
+	
+	//fprintf(stdout, "\nTIME: %ld milliseconds\n", time);
+	return time;
+}
+
 
 string remove_special_characters(string line){
      string temp  = "";
