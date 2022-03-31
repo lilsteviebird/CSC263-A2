@@ -21,9 +21,29 @@ int main(int argc, const char * argv[]) {
     vector <string> keywords;
 
     keywords.push_back("+Datasets");
-    keywords.push_back("accuracy");
-    // keywords.push_back("updated");
-    // keywords.push_back("data");
+    keywords.push_back("+accuracy");
+    keywords.push_back("+data");
+    keywords.push_back("+total");
+    keywords.push_back("+updated");
+
+    keywords.push_back("+why");
+    keywords.push_back("+fire");
+    keywords.push_back("+cannot");
+    keywords.push_back("+armament");
+    keywords.push_back("+whatever");
+
+    keywords.push_back("+assess");
+    keywords.push_back("+situation");
+    keywords.push_back("+dangerous");
+    keywords.push_back("+safe");
+    keywords.push_back("+tag");
+
+     keywords.push_back("+strange");
+    keywords.push_back("+Julio");
+    keywords.push_back("+said");
+    keywords.push_back("+hello");
+    keywords.push_back("+book");
+
     // for(int i = 4; i <= size;i++){
 
     //     string curr = argv[i];
