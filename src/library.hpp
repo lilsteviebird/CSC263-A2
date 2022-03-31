@@ -40,8 +40,8 @@ typedef struct {
 
 InvertedIndex create_indexer(string datatext_name, int length);
 Xapian::WritableDatabase create_xapian_database(string datatext_name, int length);
-vector<string> split(string str, char delimiter);
 string remove_special_characters(string line);
 bool check_stop_word(string word_given, vector<string> stop_words);
 void query_searcher (Xapian::WritableDatabase db, int k, vector<string> keywords);
+vector<string> line_seperator(string line);
 #endif /* library_hpp */
