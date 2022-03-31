@@ -58,7 +58,6 @@ Xapian::WritableDatabase create_xapian_database(string datatext_name, int length
 				if(check_stop_word(curr, stop_words) == false){
 					curr = remove_special_characters(curr);
 					if(curr.empty() || curr[0] == ' ' || curr.size() == 0){
-<<<<<<< Updated upstream
 						continue;
 					}
 					else
@@ -67,16 +66,6 @@ Xapian::WritableDatabase create_xapian_database(string datatext_name, int length
 						doc.add_term(curr);
 						value++;
 					}
-=======
-					continue;
-				}
-				else
-				{
-					//doc.add_value(value, string(curr));
-					doc.add_term(curr);
-					value++;
-				}
->>>>>>> Stashed changes
 						
 				}
                 // cout << curr << endl;

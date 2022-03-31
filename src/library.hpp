@@ -43,9 +43,5 @@ Xapian::WritableDatabase create_xapian_database(string datatext_name, int length
 string remove_special_characters(string line);
 bool check_stop_word(string word_given, vector<string> stop_words);
 void query_searcher (Xapian::WritableDatabase db, int k, vector<string> keywords);
-<<<<<<< Updated upstream
 vector<string> line_seperator(string line);
-=======
-
->>>>>>> Stashed changes
 #endif /* library_hpp */
